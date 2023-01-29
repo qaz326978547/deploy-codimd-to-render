@@ -1,0 +1,21 @@
+databases:
+- name: my-codimd-db
+  ipAllowList: [] #建立一個其他人都不能連的資料庫
+
+services:
+- type: web
+  name: my-codimd
+  env: docker #從 Dockerfile 建立一個 Web Service
+  envVars:
+  - key: CMD_DB_URL
+    fromDatabase:
+      name: my-codimd-db
+      property: connectionString # 直接把資料庫的 connecion string 填進這個環境變數
+  - key: CMD_PROTOCOL_USESSL
+    value: true
+  - key: CMD_IMAGE_UPLOAD_TYPE
+    value: filesystem
+  disk:
+    name: my-codimd-upload
+    mountPath: /home/hackmd/app/public/uploads # 直接把磁碟機掛在這個路徑上
+    sizeGB: 1
